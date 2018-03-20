@@ -3,31 +3,16 @@
   include "common/sidebar.php"; 
 $page = $this->uri->segment(2);
 $id   = $this->uri->segment(3); 
-$purchaseCode     = isset($editData->purchaseCode) ? $editData->purchaseCode:'';
-$purchaseName     = isset($editData->purchaseName) ? $editData->purchaseName:'';
-$purchaseMobileNo = isset($editData->purchaseMobileNo) ? $editData->purchaseMobileNo:'';
-$purchaseAddress  = isset($editData->purchaseAddress) ? $editData->purchaseAddress:'';
-$purchaseEmail    = isset($editData->purchaseEmail) ? $editData->purchaseEmail:'';
-$purchaseGstNo    = isset($editData->purchaseGstNo) ? $editData->purchaseGstNo:'';
-$purchaseId       = isset($editData->purchaseId) ? $editData->purchaseId:'';
-$purchaseUniqId   = isset($editData->purchaseUniqId) ? $editData->purchaseUniqId:'';
 
 $purchaseFields = array( 
             "purForm" => array ("method" => 'post', "name" => 'purchaseForm', "id" =>'purchaseForm' ),
-            "purCode" => array ("name" => 'purchaseCode', "id" =>'purchaseCode', "class" =>'form-control upperCase', "required"=>'required',  "value"=> $purchaseCode ),
-            "purName" => array ("name" => 'purchaseName', "id" =>'purchaseName', "class" =>'form-control upperCase', "required"=>'required', "value"=>$purchaseName ),
-            "purMob" => array ("name" => 'purchaseMobileNo', "id" =>'purchaseMobileNo', "class" =>'form-control',  "value"=>$purchaseMobileNo ),
-            "purEmail" => array ("name" => 'purchaseEmail', "id" =>'purchaseEmail', "class" =>'form-control',  "value"=>$purchaseEmail ),
-            "purGst" => array ("name" => 'purchaseGstNo', "id" =>'purchaseGstNo', "class" =>'form-control upperCase',  "value"=>$purchaseGstNo ),
-            "purAddress" => array ("name" => 'purchaseAddress', "id" =>'purchaseAddress', "class" =>'form-control',  "value"=>$purchaseAddress, "rows"=>2 ),
-            "purId" => array ("name" => 'purchaseId', "id" =>'purchaseId', "class" =>'form-control', "value"=>$purchaseId, "type"=>'hidden'),
-            "purUniqId" => array ("name" => 'purchaseUniqId', "id" =>'purchaseUniqId', "class" =>'form-control', "value"=>$purchaseUniqId,"type"=>'hidden' ),
             "purSubmit" => array ("name" => 'addPurchase', "id" =>'addPurchase', "class" =>'btn btn-success btn-sm', "value"=>'SAVE',"type"=>'submit' ),
             "purReset" => array ("name" => 'resetPurchase', "id" =>'resetPurchase', "class" =>'btn btn-warning btn-sm', "value"=>'RESET',"type"=>'reset' ),
             "collapse" => array ("name" => 'minMax', "id" =>'minMax', "class" =>'btn btn-box-tool fa fa-minus', "data-widget"=>'collapse', "data-toggle"=>'tooltip', "title"=>'Collapse' ),
             
          );
 ?>
+
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -90,20 +75,7 @@ $purchaseFields = array(
                       <?=form_input($purSid)?>
                 </div>
 
-                <div class="col-sm-6">
-                      <label class="control-label">Email</label>
-                      <?=form_input( $purchaseFields['purEmail'])?>
-                </div>
-
-                <div class="col-sm-6">
-                      <label class="control-label">GST NO</label>
-                      <?=form_input( $purchaseFields['purGst'])?> 
-                </div>
-
-                <div class="col-sm-6">
-                      <label class="control-label">Address</label>
-                      <?=form_textarea( $purchaseFields['purAddress'])?> 
-                </div>
+                
 
             </div>
         
@@ -111,8 +83,6 @@ $purchaseFields = array(
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-            <?=form_input( $purchaseFields['purId'])?>
-            <?=form_input( $purchaseFields['purUniqId'])?>
 
             <?=form_input( $purchaseFields['purSubmit'])?>
             <?=form_input( $purchaseFields['purReset'])?>
@@ -189,8 +159,6 @@ $purchaseFields = array(
 <!-- page script -->
 <script>
   $(function () {
- 
-
     $('#example1').DataTable()
     $('#example2').DataTable({
       'paging'      : true,
@@ -200,5 +168,16 @@ $purchaseFields = array(
       'info'        : true,
       'autoWidth'   : false
     })
-  })
+  });
+
+  function getSupplier(){
+    $('#purchaseSupplierName').autocomplete({ source: '<?=base_url("autoCompleteData/getSupplier")?>', minLength:1,
+      select:function(evt, ui){
+                $('#purchaseSupplierId').val(ui.item.supplierId);
+
+      } 
+
+    });
+     
+  }
 </script>
