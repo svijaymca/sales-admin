@@ -141,16 +141,21 @@ class Purchase extends CI_Controller {
 
 	public function purchaseDelete()
 	{ 
-		 $id = $this->uri->segment(3); 
-		
+		$id   = $this->UtilityMethods->getId('purchaseId','purchase','purchaseUniqId', $this->uri->segment(3) );
 		if(isset($id)){
-			$data = array(
+			$data1 = array(
 				'purchaseStatus' 	=> 1,
 				'purchaseDeletedBy' 	=> $this->session->userdata['logged_in']['user_id'],
 				'purchaseDeletedOn' 	=> NOW(),
 				'purchaseDeletedIp' 	=> $this->UtilityMethods->getRealIpAddr() );
+			$data2 = array(
+				'purchaseDetailsStatus' 	=> 1,
+				'purchaseDetailsDeletedBy' 	=> $this->session->userdata['logged_in']['user_id'],
+				'purchaseDetailsDeletedOn' 	=> NOW(),
+				'purchaseDetailsDeletedIp' 	=> $this->UtilityMethods->getRealIpAddr() );
 
-			$result = $this->UtilityMethods->recordDelete('purchases', $data, 'purchaseUniqId', $id);
+			$result = $this->UtilityMethods->recordDelete('purchase', $data1, 'purchaseId', $id);
+			$result = $this->UtilityMethods->recordDelete('purchaseDetails', $data2, 'purchaseDetailsPurchaseId', $id);
 
 			if($result==true){
 				$this->session->set_flashdata('msg', 'Purchase Deleted Successfully...');
