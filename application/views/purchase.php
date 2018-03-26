@@ -60,17 +60,17 @@ $purchaseFields = array(
                          $branchOptions[$list->branchId]   = $list->branchName ;
                      } ?>    
 
-                      <?=form_dropdown('purchaseBranchId', $branchOptions, '', 'id ="purchaseBranchId" class="form-control select2" style="width:100%;" required' )?>
+                      <?=form_dropdown('purchaseBranchId', $branchOptions, '', 'id ="purchaseBranchId" class="form-control select2" style="width:100%;" required tabindex="1"' )?>
                 </div>
 
                 <div class="col-sm-6">
                       <label class="control-label"> Date</label>
-                      <?=form_input('purchaseDate', '', 'id ="purchaseDate" class="form-control datePicker" style="" required')?>
+                      <?=form_input('purchaseDate', '', 'id ="purchaseDate" class="form-control datePicker" style="" required tabindex="1"')?>
                 </div>     
 
                 <div class="col-sm-6">
                       <label class="control-label">Supplier</label>
-                      <?=form_input('purchaseSupplierName', '', 'id ="purchaseSupplierName" class="form-control" onfocus="getSupplier()" required' )?>
+                      <?=form_input('purchaseSupplierName', '', 'id ="purchaseSupplierName" class="form-control" onfocus="getSupplier()" required tabindex="1" ' )?>
                       <?php $purSid = array("name" => 'purchaseSupplierId', "id" =>'purchaseSupplierId',  "value"=>'', "type"=>'hidden'); ?>
                       <?=form_input($purSid)?>
                 </div>
@@ -95,19 +95,21 @@ $purchaseFields = array(
                         </tr>
                         </thead>
                         <tbody><div class="col-sm-12">
-                        <?php $i=0; $sno = 1; ?>
+                        <?php $sno = 1; 
+                         for($i=0; $i<5; $i++){ 
+                        ?>
                         <tr>
                           <td> <?=$sno++?></td>  
                           <td>
-                            <?=form_input('purchaseDetailsProductName[]', '', 'id="purchaseDetailsProductName'.$i.'" class="form-control" onfocus="getProduct('.$i.')"')?>
-                            <?=form_hidden('purchaseDetailsProductId[]', '', 'id="purchaseDetailsProductId'.$i.'"')?>
+                            <?=form_input('purchaseDetailsProductName[]', '', 'id="purchaseDetailsProductName'.$i.'" class="form-control" onfocus="getProduct('.$i.')" tabindex="1"')?>
+                            <input type="hidden" name="purchaseDetailsProductId[]" id="purchaseDetailsProductId<?=$i?>">
                             <?=form_hidden('purchaseDetailsId[]', '', 'id="purchaseDetailsId'.$i.'"')?>
                           </td>
                           <td>
                             <?=form_input('purchaseDetailsProductCode[]', '', 'id="purchaseDetailsProductCode'.$i.'" class="form-control" readonly')?>
                           </td> 
                           <td>
-                            <?=form_input('purchaseDetailsQty[]', '', 'id="purchaseDetailsQty'.$i.'" class="form-control alignRight" onkeyup="getAmount('.$i.')"  ')?>
+                            <?=form_input('purchaseDetailsQty[]', '', 'id="purchaseDetailsQty'.$i.'" class="form-control alignRight" onkeyup="getAmount('.$i.')" tabindex="1" ')?>
                           </td> 
                           <td>
                             <?=form_input('purchaseDetailsRate[]', '', 'id="purchaseDetailsRate'.$i.'" class="form-control alignRight" onfocus="getAmount('.$i.')" readonly')?>
@@ -116,7 +118,7 @@ $purchaseFields = array(
                             <?=form_input('purchaseDetailsAmount[]', '', 'id="purchaseDetailsAmount'.$i.'" class="form-control alignRight amount" onfocus="getAmount('.$i.')" readonly ')?>
                           </td>    
                         </tr>
-
+                          <?php } ?>
                         </tbody>
                       
                       </table>
@@ -133,26 +135,26 @@ $purchaseFields = array(
                             </td></tr>
                           <tr><td style="width: 50%"></td>
                             <th  style="width: 20%" class="alignRight">CGST %</th>
-                            <td  style="width: 10%"> <?=form_input('purchaseCgstPer', '', 'id="purchaseCgstPer" class="form-control alignRight " onkeyup="getNetAmount()" ')?></td>
+                            <td  style="width: 10%"> <?=form_input('purchaseCgstPer', '', 'id="purchaseCgstPer" class="form-control alignRight " onkeyup="getNetAmount()"  tabindex="1" ')?></td>
                             <td  style="width: 20%">
                           <?=form_input('purchaseCgstAmount', '', 'id="purchaseCgstAmount" class="form-control alignRight " readonly  onfocus="getNetAmount()"  ')?>
                         </td></tr>
                         <tr><td style="width: 50%"></td>
                             <th  style="width: 20%" class="alignRight">SGST %</th>
-                            <td  style="width: 10%"> <?=form_input('purchaseSgstPer', '', 'id="purchaseSgstPer" class="form-control alignRight " onkeyup="getNetAmount()"  ')?></td>
+                            <td  style="width: 10%"> <?=form_input('purchaseSgstPer', '', 'id="purchaseSgstPer" class="form-control alignRight " onkeyup="getNetAmount()" tabindex="1" ')?></td>
                             <td  style="width: 20%">
                           <?=form_input('purchaseSgstAmount', '', 'id="purchaseSgstAmount" class="form-control alignRight " readonly onfocus="getNetAmount()"  ')?>
                         </td></tr>
                         <tr><td style="width: 50%"></td>
                             <th  style="width: 20%" class="alignRight">IGST %</th>
-                            <td  style="width: 10%"> <?=form_input('purchaseIgstPer', '', 'id="purchaseIgstPer" class="form-control alignRight " onkeyup="getNetAmount()"  ')?></td>
+                            <td  style="width: 10%"> <?=form_input('purchaseIgstPer', '', 'id="purchaseIgstPer" class="form-control alignRight " onkeyup="getNetAmount()" tabindex="1" ')?></td>
                             <td  style="width: 20%">
                           <?=form_input('purchaseIgstAmount', '', 'id="purchaseIgstAmount" class="form-control alignRight " readonly onfocus="getNetAmount()"  ')?>
                         </td></tr>
                        
                         <tr><td style="width: 50%">
                           <label class="control-label">Remarks</label>
-                          <?php $remarks = array ("name" => 'purchaseRemarks', "id" =>'purchaseRemarks', "class" =>'form-control',  "value"=>'', "rows"=>2 ) ?>
+                          <?php $remarks = array ("name" => 'purchaseRemarks', "id" =>'purchaseRemarks', "class" =>'form-control',  "value"=>'', "rows"=>2, "tabindex"=>'1' ) ?>
                           <?=form_textarea(  $remarks)?>
                         </td>
                             <th  style="width: 20%" class="alignRight">Net Amount</th>
@@ -178,6 +180,123 @@ $purchaseFields = array(
         <!-- /.box-footer-->
       </div>
       <?php echo form_close(); ?>
+<?php }elseif( isset($page) && ($page == 'purchaseView')   && (isset($id))  ) {   ?>
+      <!-- Default box -->
+
+<?php echo form_open_multipart('', $purchaseFields['purForm']);?>
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title"> <b>PURCHASE</b></h3>
+
+          <div class="box-tools pull-right">
+            <?php if(($page != 'purchaseAdd')){ ?><a class="btn btn-primary btn-sm" href="<?=base_url('purchase/purchaseAdd')?>" data-widget="Add Purchase" data-toggle="tooltip" title="Add Purchase"> ADD </a> <?php } ?>
+            <?=form_button( $purchaseFields['collapse'])?>
+          </div>
+        </div>
+        <div class="box-body">
+            <div class="col-sm-12">
+
+                <div class="col-sm-4">
+                      <label class="control-label">Branch : </label>
+                    <?=$editData->branchName?>    
+                </div>
+
+                <div class="col-sm-4">
+                      <label class="control-label"> Date : </label>
+                      <?=date('d/m/Y', strtotime($editData->purchaseDate))?> 
+                </div>     
+                <div class="col-sm-4">
+                      <label class="control-label">Supplier : </label>
+                      <?=$editData->supplierName?>
+                </div>
+
+                <div class="col-sm-12">
+                  <div class="box-body">  
+                    <div class="table-responsive tableBorder">
+                      <table class="table table-bordered " id="productDetailTable">
+                        <thead>
+                          <tr><th colspan="6" class="upperCase" style="background-color: #bbe1f8; color: #222d32; font-size: 22px;">
+                           Product Details 
+                             
+                          </th></tr>
+                        
+                        <tr style="background-color: #daecf8; color: #222d32" class="upperCase">
+                          <th style="width: 5%;">#</th>
+                          <th style="width: 25%;"> Product</th>
+                          <th style="width: 15%;"> Code</th>
+                          <th style="width: 15%;"> Quantity</th>
+                          <th style="width: 15%;"> Rate</th>
+                          <th style="width: 20%;"> Amount </th>
+                        </tr>
+                        </thead>
+                        <tbody><div class="col-sm-12">
+                        <?php $sno = 1;
+                         foreach($editDataDetail as $editDetails){ 
+                        ?>
+                        <tr>
+                          <td> <?=$sno++?></td>  
+                          <td> <?=$editDetails->productName?></td>
+                          <td> <?=$editDetails->productCode?></td>
+                          <td> <?=$editDetails->purchaseDetailsQty?></td>
+                          <td> <?=$editDetails->purchaseDetailsRate?></td>
+                          <td> <?=$editDetails->purchaseDetailsAmount?></td>
+                        </tr>
+                          <?php } ?>
+                        </tbody>
+                      
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                  <div class="col-sm-12">
+                       <table class="table table-bordered table-responsive">
+                          <tr><td style="width: 50%"></td>
+                            <th  style="width: 20%" class="alignRight">Gross Total</th>
+                            <td  style="width: 10%"></td>
+                            <td  style="width: 20%">
+                              <?=$editData->purchaseGrossTotal?>
+                            </td></tr>
+                          <tr><td style="width: 50%"></td>
+                            <th  style="width: 20%" class="alignRight">CGST %</th>
+                            <td  style="width: 10%"> <?=$editData->purchaseCgstPer?></td>
+                            <td  style="width: 20%"><?=$editData->purchaseCgstAmount?>
+                        </td></tr>
+                        <tr><td style="width: 50%"></td>
+                            <th  style="width: 20%" class="alignRight">SGST %</th>
+                            <td  style="width: 10%"><?=$editData->purchaseSgstPer?> </td>
+                            <td  style="width: 20%"><?=$editData->purchaseSgstAmount?>
+                        </td></tr>
+                        <tr><td style="width: 50%"></td>
+                            <th  style="width: 20%" class="alignRight">IGST %</th>
+                            <td  style="width: 10%"><?=$editData->purchaseIgstPer?> </td>
+                            <td  style="width: 20%"><?=$editData->purchaseIgstAmount?>
+                        </td></tr>
+                       
+                        <tr><td style="width: 50%">
+                          <label class="control-label">Remarks :</label>
+                           <?php echo $editData->purchaseRemarks; ?>
+                          
+                        </td>
+                            <th  style="width: 20%" class="alignRight">Net Amount</th>
+                            <td  style="width: 10%"> </td>
+                            <td  style="width: 20%"><?=$editData->purchaseNetTotal?></td>
+                          </tr>
+
+                        </table>
+                     
+                  </div>
+            </div>
+        
+        
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+
+            <?=anchor(base_url('purchase'), 'Back', 'class="btn btn-info btn-sm"')?>
+        </div>
+        <!-- /.box-footer-->
+      </div>
+      <?php echo form_close(); ?>
 <?php }else{ ?>
 
       <div class="box box-primary">
@@ -197,10 +316,11 @@ $purchaseFields = array(
                 <thead>
                 <tr>
                   <th>SNO</th>
-                  <th>CODE</th>
-                  <th>NAME</th>
-                  <th>MOBILE</th>
-                  <th>E-MAIL</th>
+                  <th>BRANCH</th>
+                  <th>PURCHASE NO</th>
+                  <th>DATE</th>
+                  <th>SUPPLIER</th>
+                  <th>AMOUNT</th>
                   <th class="cnt" width="10%">ACTION</th>
                 </tr>
                 </thead>
@@ -209,13 +329,14 @@ $purchaseFields = array(
                  
                 <tr>
                   <td><?=$sno++?></td>
-                  <td><?=strtoupper($purchaseList->purchaseCode)?></td>
-                  <td><?=strtoupper($purchaseList->purchaseName)?></td>
-                  <td><?=$purchaseList->purchaseMobileNo?></td>
-                  <td><?=$purchaseList->purchaseEmail?></td>
+                  <td><?=strtoupper($purchaseList->branchName)?></td>
+                  <td><?=strtoupper($purchaseList->purchaseNo)?></td>
+                  <td><?=date("d/m/Y", strtotime($purchaseList->purchaseDate))?></td>
+                  <td><?=strtoupper($purchaseList->supplierName)?></td>
+                  <td><?=$purchaseList->purchaseNetTotal?></td>
                   <td class="cnt">
-                    <a href="<?=base_url('purchase/purchaseEdit/'.$purchaseList->purchaseUniqId)?>"><i class="fa fa-edit" style="font-size:16px"></i> </a>  
-                   &nbsp;&nbsp; <a style="font-size:16px; color: red" href="<?=base_url('purchase/purchaseDelete/'.$purchaseList->purchaseUniqId)?>"><i class="fa fa-trash-o"></i></td> 
+                    <a href="<?=base_url('purchase/purchaseView/'.$purchaseList->purchaseUniqId)?>"><i class="fa fa-edit" style="font-size:16px"></i> </a>  
+                   &nbsp;&nbsp; <a style="font-size:16px; color: red" href="<?=base_url('purchase/purchaseDelete/'.$purchaseList->purchaseUniqId)?>" onclick="return confirm('Are You Want To Delete....!')"><i class="fa fa-trash-o"></i></td> 
                 </tr>
                  <?php } } ?>
                </tbody>
@@ -285,7 +406,7 @@ $purchaseFields = array(
 
             apndRow += '<td> '+ sno +'</td>';
 
-            apndRow += '<td><input type="hidden" name="productDetailsId[]" id="productDetailsId'+i+'" /> ';
+            apndRow += '<td><input type="hidden" name="purchaseDetailsId[]" id="purchaseDetailsId'+i+'" /> ';
             apndRow += '<input type="hidden" name="purchaseDetailsProductId[]" id="purchaseDetailsProductId'+i+'" /> ';
             apndRow += '<input type="text" name="purchaseDetailsProductName[]" id="purchaseDetailsProductName'+i+'" onfocus="getProduct('+i+')" class="form-control" /> </td>';
 
@@ -335,6 +456,7 @@ function getTotalAmount(){
               total   = total + amt;
     }
       $('#purchaseGrossTotal').val(total.toFixed(2));
+      getNetAmount();
 }
 
 function getNetAmount(){
