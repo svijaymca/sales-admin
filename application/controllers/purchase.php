@@ -28,37 +28,92 @@ class Purchase extends CI_Controller {
 
 	public function purchaseInsert()
 	{ 
+			$this->db->trans_start(); $tranSaction = true;
+            	//print_r($_POST); exit;
 
-            	
-		$data = array(
+            $no = $this->UtilityMethods->getNo('purchase', 'purchaseNo', 'purchaseBranchId', $this->input->post('purchaseBranchId'), 'purchaseStatus');
+
+            	$n = substr($no,2);
+            	$purchaseNo = '';
+            	if($n > 0 ){
+            		$purchaseNo 	= 'PU'.substr(('00000'.++$n),-5);
+            	}else{
+            		$purchaseNo 	= 'PU'.substr(('00001'.++$n),-5);
+            	}
+
+    if($this->input->post('purchaseNetTotal') > 0 ){
+
+		 $data = array(
 			'purchaseUniqId' => random_string('alnum',20),
-			'purchaseCode' 	=> $this->input->post('purchaseCode'),
-			'purchaseName' 	=> $this->input->post('purchaseName'),
-			'purchaseMobileNo' 	=> $this->input->post('purchaseMobileNo'),
-			'purchaseAddress' 	=> $this->input->post('purchaseAddress'),
-			'purchaseEmail' 	=> $this->input->post('purchaseEmail'),
-			'purchaseGstNo' 	=> $this->input->post('purchaseGstNo'),
+			'purchaseNo' 	=> $purchaseNo,
+			'purchaseDate' 	=> $this->UtilityMethods->dateDatabaseFormat($this->input->post('purchaseDate')),
+			'purchaseSupplierId' 	=>  $this->input->post('purchaseSupplierId'),
+			'purchaseGrossTotal' 	=> $this->input->post('purchaseGrossTotal'),
+			'purchaseCgstPer' 	=> $this->input->post('purchaseCgstPer'),
+			'purchaseCgstAmount' 	=> $this->input->post('purchaseCgstAmount'),
+			'purchaseSgstPer' 	=> $this->input->post('purchaseSgstPer'),
+			'purchaseSgstAmount' 	=> $this->input->post('purchaseSgstAmount'),
+			'purchaseIgstPer' 	=> $this->input->post('purchaseIgstPer'),
+			'purchaseIgstAmount' 	=> $this->input->post('purchaseIgstAmount'),
+			'purchaseNetTotal' 	=> $this->input->post('purchaseNetTotal'),
+			'purchaseRemarks' 	=> $this->input->post('purchaseRemarks'),
+			'purchaseBranchId' 	=> $this->input->post('purchaseBranchId'),
 			'purchaseAddedBy' => $this->session->userdata['logged_in']['user_id'],
 			'purchaseAddedOn' => NOW(),
 			'purchaseAddedIp' => $this->UtilityMethods->getRealIpAddr() );
 
-		$existsData_c = $this->UtilityMethods->getExistOrNot('purchases','purchaseCode',$this->input->post('purchaseCode'), 'purchaseStatus');
-		$existsData_g = $this->UtilityMethods->getExistOrNot('purchases','purchaseGstNo',$this->input->post('purchaseGstNo'), 'purchaseStatus');
+			list($purchaseId, $transStatus) = $this->purchaseModel->purchaseModelInsert($data);
 
-		if( ($existsData_c < 1) && ($existsData_g < 1) ){
-			$result = $this->purchaseModel->purchaseModelInsert($data);
+
+			$purchaseDetailsProductId 	=	$this->input->post('purchaseDetailsProductId');	
+			$purchaseDetailsQty 		=	$this->input->post('purchaseDetailsQty');
+			$purchaseDetailsRate 		=	$this->input->post('purchaseDetailsRate');
+			$purchaseDetailsAmount 		=	$this->input->post('purchaseDetailsAmount');	
+
+			if( $purchaseId > 0 ){	
+					
+				for($index = 0; $index < count($purchaseDetailsProductId); $index++ ){ 
+					if(!empty($purchaseDetailsProductId[$index]) && !empty($purchaseDetailsQty[$index])){
+						$details = array(
+							'purchaseDetailsUniqId' 		=> random_string('alnum', 20),
+							'purchaseDetailsPurchaseId' 	=> $purchaseId,
+							'purchaseDetailsProductId' 		=> $purchaseDetailsProductId[$index],
+							'purchaseDetailsQty' 			=> $purchaseDetailsQty[$index],
+							'purchaseDetailsRate' 			=> $purchaseDetailsRate[$index],
+							'purchaseDetailsAmount' 		=> $purchaseDetailsAmount[$index] );
+							
+					list($purdetails, $status) = $this->purchaseModel->purchaseDetailsModelInsert($details);	
+						if($status===false){
+							$tranSaction = false;
+							break;
+						}
+
+					}
+				}
 			$this->session->set_flashdata('msg', 'Purchase Added Successfully...');
-			redirect(base_url('purchase/purchaseAdd'));
+			
+			}else{
+					$tranSaction = false;
+			}
 		}else{
-			$this->session->set_flashdata('msg', 'Purchase Code Or GST NO Already Exists...');
-			redirect(base_url('purchase/purchaseAdd'));
+			$this->session->set_flashdata('msg', 'Amount is Zero, So does not saved...');
 		}
-	
 
+		if($tranSaction==false){
+			$this->db->trans_rollback();
+			$this->session->set_flashdata('msg', 'Query error...');
+		}else{
+			$this->db->trans_commit();
+		}
+		redirect(base_url('purchase/purchaseAdd'));
 	}
-	public function purchaseEdit()
+
+
+	public function purchaseView()
 	{
-		$editPrd['editData'] = $this->purchaseModel->editPurchase(); 
+		list($editPrd['editData'],$editPrd['editDataDetail']) = $this->purchaseModel->editPurchase();
+
+
 		$this->load->view('purchase', $editPrd);
 	}
 
