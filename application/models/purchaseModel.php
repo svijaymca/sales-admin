@@ -51,7 +51,7 @@ class purchaseModel extends CI_Model{
 		return array($query1, $query2);
 	}
 
-	public function purchaseModelUpdate($data, $id){
+	/*public function purchaseModelUpdate($data, $id){
 
 		$this->db->set($data);
 		$this->db->where('purchaseId', $id);
@@ -59,7 +59,7 @@ class purchaseModel extends CI_Model{
 
 		return true;
 
-	} 
+	} */
 
 	
  
