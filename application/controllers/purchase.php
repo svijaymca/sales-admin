@@ -117,7 +117,7 @@ class Purchase extends CI_Controller {
 		$this->load->view('purchase', $editPrd);
 	}
 
-	public function purchaseUpdate()
+	/* public function purchaseUpdate()
 	{ 
 		$uniqId 	= $this->input->post('purchaseUniqId');
 		$purchaseId 	= $this->input->post('purchaseId');
@@ -137,7 +137,7 @@ class Purchase extends CI_Controller {
 			$this->session->set_flashdata('msg', 'Purchase Updated Successfully...');
 			redirect(base_url('purchase/purchaseEdit/'.$uniqId));
 		
-	}
+	} */
 
 	public function purchaseDelete()
 	{ 
