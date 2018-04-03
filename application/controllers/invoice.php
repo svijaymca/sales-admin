@@ -68,7 +68,7 @@ class Invoice extends CI_Controller {
 
 
 			$invoiceDetailsProductId 	=	$this->input->post('invoiceDetailsProductId');	
-			$invoiceDetailsQty 		=	$this->input->post('invoiceDetailsQty');
+			$invoiceDetailsQty 			=	$this->input->post('invoiceDetailsQty');
 			$invoiceDetailsRate 		=	$this->input->post('invoiceDetailsRate');
 			$invoiceDetailsAmount 		=	$this->input->post('invoiceDetailsAmount');	
 
