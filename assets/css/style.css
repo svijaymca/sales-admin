@@ -1,2 +1,80 @@
 /*--------------------------------------------*/
 .upperCase { text-transform: uppercase; }
+.alignRight { text-align:right;}
+.alignLeft { text-align:left;}
+.alignCenter { text-align:center;}
+.tableBorder { border-radius: 20px; border: 2px solid #bbe1f8; }
+.errorBox {border-color: RED; border-width:1px; border-style:solid;}
+.errorText { color:#FF0000;}
+.fontBold{ font-weight:bold;}
+
+#hideMe {
+    -moz-animation: cssAnimation 0s ease-in 5s forwards;
+    /* Firefox */
+    -webkit-animation: cssAnimation 0s ease-in 5s forwards;
+    /* Safari and Chrome */
+    -o-animation: cssAnimation 0s ease-in 5s forwards;
+    /* Opera */
+    animation: cssAnimation 0s ease-in 5s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+@keyframes cssAnimation {
+    to {
+        width:0;
+        height:0;
+        overflow:hidden;
+    }
+}
+@-webkit-keyframes cssAnimation {
+    to {
+        width:0;
+        height:0;
+        visibility:hidden;
+    }
+}
+
+.report-table-border-top {
+border-top:1px solid #000000;
+}
+.report-table-border-bottom {
+border-bottom:1px solid #000000;
+}
+.report-border-top {
+border-top:1px solid #000000;
+}
+.report-border-right {
+border-right:1px solid #000000;
+}
+.report-border-bottom {
+border-bottom:1px solid #000000;
+}
+.report-border-left {
+border-left:1px solid #000000;
+}
+
+.report-padding-top-bottom {
+padding:10px 5px;
+}
+.report-padding-table-top-bottom {
+padding:10px 5px;
+}
+.repor-table-border 
+{
+border-left:1px solid #000000;
+border-top:1px solid #000000;
+border-right:1px solid #000000 ;
+border-bottom:1px solid #000000;
+border-radius: 20px !important;
+}
+.repor-table-left-bottom
+{
+border-bottom:1px solid #000000 !important; 
+border-left:1px solid #000000 !important;
+}
+.report-outer-table {
+border-left:1px solid #000000 !important;
+border-top:1px solid #000000 !important;
+border-right:1px solid #000000 !important;
+
+}
