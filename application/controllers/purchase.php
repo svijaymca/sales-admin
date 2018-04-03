@@ -43,10 +43,12 @@ class Purchase extends CI_Controller {
 
     if($this->input->post('purchaseNetTotal') > 0 ){
 
+    	$purchaseDate 	= $this->UtilityMethods->dateDatabaseFormat($this->input->post('purchaseDate'));
+
 		 $data = array(
 			'purchaseUniqId' => random_string('alnum',20),
 			'purchaseNo' 	=> $purchaseNo,
-			'purchaseDate' 	=> $this->UtilityMethods->dateDatabaseFormat($this->input->post('purchaseDate')),
+			'purchaseDate' 	=> $purchaseDate,
 			'purchaseSupplierId' 	=>  $this->input->post('purchaseSupplierId'),
 			'purchaseGrossTotal' 	=> $this->input->post('purchaseGrossTotal'),
 			'purchaseCgstPer' 	=> $this->input->post('purchaseCgstPer'),
@@ -86,6 +88,15 @@ class Purchase extends CI_Controller {
 						if($status===false){
 							$tranSaction = false;
 							break;
+						}else{
+
+						$sta = $this->UtilityMethods->stockLedger('IN', $purdetails, $purchaseDate, $purchaseDetailsProductId[$index], $this->input->post('purchaseBranchId'), $purchaseDetailsQty[$index], 'PURCHASE');
+
+							if($sta===false){
+								$tranSaction = false;
+								break;
+							}	
+
 						}
 
 					}
@@ -117,7 +128,7 @@ class Purchase extends CI_Controller {
 		$this->load->view('purchase', $editPrd);
 	}
 
-	/* public function purchaseUpdate()
+	public function purchaseUpdate()
 	{ 
 		$uniqId 	= $this->input->post('purchaseUniqId');
 		$purchaseId 	= $this->input->post('purchaseId');
@@ -137,7 +148,7 @@ class Purchase extends CI_Controller {
 			$this->session->set_flashdata('msg', 'Purchase Updated Successfully...');
 			redirect(base_url('purchase/purchaseEdit/'.$uniqId));
 		
-	} */
+	}
 
 	public function purchaseDelete()
 	{ 
