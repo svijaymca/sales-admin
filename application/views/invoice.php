@@ -278,67 +278,67 @@ echo form_hidden('invoiceId', !empty($editData->invoiceUniqId)?$editData->invoic
 						  <?php if($page=='invoiceEdit'){ ?> <th style="width: 5%; text-align:center"> Del </th><?php }?>
                         </tr>
                         </thead>
-                        
+                        <tbody>
                         <?php $sno = 1; $i=0;
 						if($page=='invoiceAdd'){ ?>
-						 <tbody>
+						 
                        <?php  for($i=0; $i<5; $i++){ 
                         ?>
                         <tr>
                           <td> <?=$sno++?></td>  
                           <td>
-                            <?=form_input('invoiceDetailsProductName[]', '', 'id="invoiceDetailsProductName'.$i.'" class="form-control" onfocus="getProduct('.$i.')" tabindex="1"')?>
-                            <?=form_hidden('invoiceDetailsProductId[]', '', 'id="invoiceDetailsProductId'.$i.'"')?>
-                            <?=form_hidden('invoiceDetailsId[]', '', 'id="invoiceDetailsId'.$i.'"')?>
+                            <input type="text" name="invoiceDetailsProductName[]" id="invoiceDetailsProductName<?=$i?>" class="form-control" onfocus="getProduct(<?=$i?>)" tabindex="1" />
+                            <input type="hidden" name="invoiceDetailsProductId[]" id="invoiceDetailsProductId<?=$i?>"  />
+                            <input type="hidden" name="invoiceDetailsId[]" id="invoiceDetailsId<?=$i?>"  />
                           </td>
                           <td>
-                            <?=form_input('invoiceDetailsProductCode[]', '', 'id="invoiceDetailsProductCode'.$i.'" class="form-control" readonly')?>
+                             <input type="text" name="invoiceDetailsProductCode[]" id="invoiceDetailsProductCode<?=$i?>" class="form-control alignCenter"  readonly />
                           </td> 
                           <td>
-                            <?=form_input('invoiceDetailsQty[]', '', 'id="invoiceDetailsQty'.$i.'" class="form-control alignRight" onkeyup="getAmount('.$i.')" tabindex="1" ')?>
+                            <input type="text" name="invoiceDetailsQty[]" id="invoiceDetailsQty<?=$i?>" class="form-control alignRight" tabindex="1" onkeyup="getAmount(<?=$i?>)" />
                           </td> 
                           <td>
-                            <?=form_input('invoiceDetailsRate[]', '', 'id="invoiceDetailsRate'.$i.'" class="form-control alignRight" onfocus="getAmount('.$i.')" readonly')?>
+                             <input type="text" name="invoiceDetailsRate[]" id="invoiceDetailsRate<?=$i?>" class="form-control alignRight"  readonly />
                           </td>
                           <td>
-                            <?=form_input('invoiceDetailsAmount[]', '', 'id="invoiceDetailsAmount'.$i.'" class="form-control alignRight amount" onfocus="getAmount('.$i.')" readonly ')?>
+                              <input type="text" name="invoiceDetailsAmount[]" id="invoiceDetailsAmount<?=$i?>" class="form-control alignRight amount"  readonly />
                           </td>    
                         </tr>
                           <?php }?>
-						  </tbody>
+						  
 						   <?php }else{  ?>
-						   <tbody>
+						   
 						<?php  foreach( $editDataDetail  as $editDetail){
 						  ?>
 						 <tr>
                           <td> <?=$sno++?></td>  
                           <td>
-                            <?=form_input('invoiceDetailsProductName[]', !empty($editDetail->productName)?$editDetail->productName:'', 'id="invoiceDetailsProductName'.$i.'" class="form-control" onfocus="getProduct('.$i.')" tabindex="1"')?>
-                           
-							<?=form_hidden('invoiceDetailsProductId[]', !empty($editDetail->invoiceDetailsProductId)?$editDetail->invoiceDetailsProductId:'', 'id="invoiceDetailsProductId'.$i.'"')?>
-                            <?=form_hidden('invoiceDetailsId[]', !empty($editDetail->invoiceDetailsId)?$editDetail->invoiceDetailsId:'', 'id="invoiceDetailsId'.$i.'"')?>
+                            <input type="text" name="invoiceDetailsProductName[]" id="invoiceDetailsProductName<?=$i?>" class="form-control" onfocus="getProduct(<?=$i?>)" tabindex="1" value="<?=!empty($editDetail->productName)?$editDetail->productName:''?>" />
+                            <input type="hidden" name="invoiceDetailsProductId[]" id="invoiceDetailsProductId<?=$i?>" value="<?=!empty($editDetail->invoiceDetailsProductId)?$editDetail->invoiceDetailsProductId:''?>"  />
+                            <input type="hidden" name="invoiceDetailsId[]" id="invoiceDetailsId<?=$i?>" value="<?=!empty($editDetail->invoiceDetailsId)?$editDetail->invoiceDetailsId:''?>"  />
                           </td>
                           <td>
-                            <?=form_input('invoiceDetailsProductCode[]', !empty($editDetail->productCode)?$editDetail->productCode:'', 'id="invoiceDetailsProductCode'.$i.'" class="form-control" readonly')?>
+                             <input type="text" name="invoiceDetailsProductCode[]" id="invoiceDetailsProductCode<?=$i?>" class="form-control alignCenter"  readonly value="<?=!empty($editDetail->productCode)?$editDetail->productCode:''?>" />
                           </td> 
                           <td>
-                            <?=form_input('invoiceDetailsQty[]', !empty($editDetail->invoiceDetailsQty)?$editDetail->invoiceDetailsQty:'', 'id="invoiceDetailsQty'.$i.'" class="form-control alignRight" onkeyup="getAmount('.$i.')" tabindex="1" ')?>
+                            <input type="text" name="invoiceDetailsQty[]" id="invoiceDetailsQty<?=$i?>" class="form-control alignRight" tabindex="1" onkeyup="getAmount(<?=$i?>)" value="<?=!empty($editDetail->invoiceDetailsQty)?$editDetail->invoiceDetailsQty:''?>" />
                           </td> 
                           <td>
-                            <?=form_input('invoiceDetailsRate[]', !empty($editDetail->invoiceDetailsRate)?$editDetail->invoiceDetailsRate:'', 'id="invoiceDetailsRate'.$i.'" class="form-control alignRight" onfocus="getAmount('.$i.')" readonly')?>
+                             <input type="text" name="invoiceDetailsRate[]" id="invoiceDetailsRate<?=$i?>" class="form-control alignRight" value="<?=!empty($editDetail->invoiceDetailsRate)?$editDetail->invoiceDetailsRate:''?>" readonly />
                           </td>
                           <td>
-                            <?=form_input('invoiceDetailsAmount[]', !empty($editDetail->invoiceDetailsAmount)?$editDetail->invoiceDetailsAmount:'', 'id="invoiceDetailsAmount'.$i.'" class="form-control alignRight amount" onfocus="getAmount('.$i.')" readonly ')?>
-                          </td> 
-						     <td style="text-align:center">
-							 <a style="font-size:16px; color: red" href="<?=base_url('invoice/invoiceDetailDelete/'.$editDetail->invoiceDetailsUniqId.'/'.$editData->invoiceUniqId)?>" onclick="return confirm('Are You Want To Delete....!')"><i class="fa fa-trash-o"></i></a></td>
+                              <input type="text" name="invoiceDetailsAmount[]" id="invoiceDetailsAmount<?=$i?>" class="form-control alignRight amount" value="<?=!empty($editDetail->invoiceDetailsAmount)?$editDetail->invoiceDetailsAmount:''?>" readonly />
+                          </td>    
+                           <td style="text-align:center">
+               <a style="font-size:16px; color: red" href="<?=base_url('invoice/invoiceDetailDelete/'.$editDetail->invoiceDetailsUniqId.'/'.$editData->invoiceUniqId)?>" onclick="return confirm('Are You Want To Delete....!')"><i class="fa fa-trash-o"></i></a>
+						    </td>
                         </tr>
 						  
-					<?php $i = $i++; } ?>
-						 </tbody>
+					<?php $i = $i+1; } ?>
+						 
 						<?php } ?>
                         
-                      
+                      </tbody>
                       </table>
                     </div>
                   </div>
@@ -405,123 +405,7 @@ echo form_hidden('invoiceId', !empty($editData->invoiceUniqId)?$editData->invoic
         <!-- /.box-footer-->
       </div>
       <?php echo form_close(); ?>
-<?php }elseif( isset($page) && ($page == 'invoiceView')   && (isset($id))  ) {   ?>
-      <!-- Default box -->
 
-<?php echo form_open_multipart('', $invoiceFields['purForm']);?>
-      <div class="box box-primary">
-        <div class="box-header with-border">
-          <h3 class="box-title"> <b>INVOICE</b></h3>
-
-          <div class="box-tools pull-right">
-            <?php if(($page != 'invoiceAdd')){ ?><a class="btn btn-primary btn-sm" href="<?=base_url('invoice/invoiceAdd')?>" data-widget="Add Invoice" data-toggle="tooltip" title="Add Invoice"> ADD </a> <?php } ?>
-            <?=form_button( $invoiceFields['collapse'])?>
-          </div>
-        </div>
-        <div class="box-body">
-            <div class="col-sm-12">
-
-                <div class="col-sm-4">
-                      <label class="control-label">Branch : </label>
-                    <?=$editData->branchName?>    
-                </div>
-
-                <div class="col-sm-4">
-                      <label class="control-label"> Date : </label>
-                      <?=date('d/m/Y', strtotime($editData->invoiceDate))?> 
-                </div>     
-                <div class="col-sm-4">
-                      <label class="control-label">Customer : </label>
-                      <?=$editData->customerName?>
-                </div>
-
-                <div class="col-sm-12">
-                  <div class="box-body">  
-                    <div class="table-responsive tableBorder">
-                      <table class="table table-bordered " id="productDetailTable">
-                        <thead>
-                          <tr><th colspan="6" class="upperCase" style="background-color: #bbe1f8; color: #222d32; font-size: 22px;">
-                           Product Details 
-                             
-                          </th></tr>
-                        
-                        <tr style="background-color: #daecf8; color: #222d32" class="upperCase">
-                          <th style="width: 5%;">#</th>
-                          <th style="width: 25%;"> Product</th>
-                          <th style="width: 15%;"> Code</th>
-                          <th style="width: 15%;"> Quantity</th>
-                          <th style="width: 15%;"> Rate</th>
-                          <th style="width: 20%;"> Amount </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php $sno = 1;
-                         foreach($editDataDetail as $editDetails){ 
-                        ?>
-                        <tr>
-                          <td> <?=$sno++?></td>  
-                          <td> <?=$editDetails->productName?></td>
-                          <td> <?=$editDetails->productCode?></td>
-                          <td> <?=$editDetails->invoiceDetailsQty?></td>
-                          <td> <?=$editDetails->invoiceDetailsRate?></td>
-                          <td> <?=$editDetails->invoiceDetailsAmount?></td>
-                        </tr>
-                          <?php } ?>
-                        </tbody>
-                      
-                      </table>
-                    </div>
-                  </div>
-                </div>
-                  <div class="col-sm-12">
-                       <table class="table table-bordered table-responsive">
-                          <tr><td style="width: 50%"></td>
-                            <th  style="width: 20%" class="alignRight">Gross Total</th>
-                            <td  style="width: 10%"></td>
-                            <td  style="width: 20%">
-                              <?=$editData->invoiceGrossTotal?>
-                            </td></tr>
-                          <tr><td style="width: 50%"></td>
-                            <th  style="width: 20%" class="alignRight">CGST %</th>
-                            <td  style="width: 10%"> <?=$editData->invoiceCgstPer?></td>
-                            <td  style="width: 20%"><?=$editData->invoiceCgstAmount?>
-                        </td></tr>
-                        <tr><td style="width: 50%"></td>
-                            <th  style="width: 20%" class="alignRight">SGST %</th>
-                            <td  style="width: 10%"><?=$editData->invoiceSgstPer?> </td>
-                            <td  style="width: 20%"><?=$editData->invoiceSgstAmount?>
-                        </td></tr>
-                        <tr><td style="width: 50%"></td>
-                            <th  style="width: 20%" class="alignRight">IGST %</th>
-                            <td  style="width: 10%"><?=$editData->invoiceIgstPer?> </td>
-                            <td  style="width: 20%"><?=$editData->invoiceIgstAmount?>
-                        </td></tr>
-                       
-                        <tr><td style="width: 50%">
-                          <label class="control-label">Remarks :</label>
-                           <?php echo $editData->invoiceRemarks; ?>
-                          
-                        </td>
-                            <th  style="width: 20%" class="alignRight">Net Amount</th>
-                            <td  style="width: 10%"> </td>
-                            <td  style="width: 20%"><?=$editData->invoiceNetTotal?></td>
-                          </tr>
-
-                        </table>
-                     
-                  </div>
-            </div>
-        
-        
-        </div>
-        <!-- /.box-body -->
-        <div class="box-footer">
-
-            <?=anchor(base_url('invoice'), 'Back', 'class="btn btn-info btn-sm"')?>
-        </div>
-        <!-- /.box-footer-->
-      </div>
-      <?php echo form_close(); ?>
 <?php }else{ ?>
 
       <div class="box box-primary">
@@ -555,7 +439,12 @@ echo form_hidden('invoiceId', !empty($editData->invoiceUniqId)?$editData->invoic
                 <tr>
                   <td><?=$sno++?></td>
                   <td><?=strtoupper($invoiceList->branchName)?></td>
-                  <td><?=strtoupper($invoiceList->invoiceNo)?></td>
+                  <td class="fontBold">
+                    <a style="color: red;" href="<?=base_url('invoicePrint/printInvoice/'.$invoiceList->invoiceUniqId)?>" target="_balnk" ><i class="fa fa-print"> &nbsp;</i></a> &nbsp;
+                   <?=strtoupper($invoiceList->invoiceNo)?> &nbsp;
+                   <a  style="color: green;" href="<?=base_url('invoicePrint/printInvoice/'.$invoiceList->invoiceUniqId.'/excel')?>" target="_balnk" ><i class="fa fa-file-excel-o"></i></a>
+                      
+                    </td>
                   <td><?=date("d/m/Y", strtotime($invoiceList->invoiceDate))?></td>
                   <td><?=strtoupper($invoiceList->customerName)?></td>
                   <td><?=$invoiceList->invoiceNetTotal?></td>
