@@ -28,6 +28,68 @@ class utilityMethods extends CI_Model{
 		}	
 	}
 
+
+	public function stockLedger($type, $detailId, $date, $productId, $branchId, $qty, $ledgerStatus){
+
+		$wh	= array('stockLedgerStatus'=> 0, 'stockLedgerType'=> $type, 'stockLedgerId' => $detailId, 'stockLedgerProductId' => $productId, 'stockLedgerBranchId' 	=> $branchId );
+
+		$this->db->select('*');
+		$this->db->from('stockLedger');
+		$this->db->where($wh);
+		$query 		= $this->db->get();
+		$record 	= $query->result();
+		$rows 		= $query->num_rows();
+
+		if($ledgerStatus !='DELETE'){
+
+		if($rows == 0){
+
+			$data = array(
+				'stockLedgerType' 		=> $type,
+				'stockLedgerDetailId' 	=> $detailId,
+				'stockLedgerDate' 		=> $date,
+				'stockLedgerProductId' 	=> $productId,
+				'stockLedgerBranchId' 	=> $branchId,
+				'stockLedgerQty' 		=> $qty,
+				'stockLedgerAddedBy' 	=> $this->session->userdata['logged_in']['user_id'],
+				'stockLedgerAddedOn' 	=> NOW(),
+				'stockLedgerAddedIp' 	=> $this->UtilityMethods->getRealIpAddr() );
+
+			$rData = $this->db->insert('stockLedger', $data); 
+			$status = $this->db->trans_status();
+			return array($status);
+
+		}else{
+
+			$data = array(
+				'stockLedgerType' 		=> $type,
+				'stockLedgerDate' 		=> $date,
+				'stockLedgerProductId' 	=> $productId,
+				'stockLedgerBranchId' 	=> $branchId,
+				'stockLedgerQty' 		=> $qty,
+				'stockLedgerModifiedBy' => $this->session->userdata['logged_in']['user_id'],
+				'stockLedgerModifiedOn' => NOW(),
+				'stockLedgerModifiedIp' => $this->UtilityMethods->getRealIpAddr() );
+
+			$where	= array( 'stockLedgerId' 	=> $record['stockLedgerId']);
+
+			$this->db->set($data);
+			$this->db->where($where);
+			$this->db->update('stockLedger'); 
+			$status = $this->db->trans_status();
+
+			return array($status);
+		}
+
+		}else{
+			
+
+		}
+
+	}
+
+
+
 	public function generatePassword($password) {
 			$password = md5($password);
 			$generate_password = substr($password,0,7).$this->generateRandomString(3).substr($password,7,4).$this->generateRandomString(5).substr($password,11,22);
@@ -54,13 +116,6 @@ class utilityMethods extends CI_Model{
 
 
 	public function createDateRangeArray($strDateFrom,$strDateTo) {
-	  // takes two dates formatted as YYYY-MM-DD and creates an
-	  // inclusive array of the dates between the from and to dates.
-	
-	  // could test validity of dates here but I'm already doing
-	  // that in the main script
-	//echo $strDateFrom."<br>";
-	//echo $strDateTo; exit; 
 	  	$aryRange=array();
 	
 	  	$iDateFrom=mktime(1,0,0,substr($strDateFrom,5,2),     substr($strDateFrom,8,2),substr($strDateFrom,0,4));
@@ -175,6 +230,60 @@ class utilityMethods extends CI_Model{
 			
 		return $query->num_rows(); 
 
+	}
+
+	public function getNo($table_name, $field, $branch_field, $branch_val, $status){
+
+			$condition = $branch_field." = '".$branch_val."'  AND " .$status." = 0 ";
+			$this->db->select_max($field);
+			$this->db->from($table_name);
+			$this->db->where($condition);
+			 $query = $this->db->get(); //echo  $this->db->last_query(); exit;
+			 $row 	= $query->row();
+
+		return $row->$field;
+	}
+
+	public function numberToWords($number){
+
+		   $no = round($number);
+		   $point = sprintf("%.3f",substr($number, -2));
+		   $hundred = null;
+		   $digits_1 = strlen($no);
+		   $i = 0;
+		   $str = array();
+		   $words = array('0' => '', '1' => 'one', '2' => 'two',
+		    '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+		    '7' => 'seven', '8' => 'eight', '9' => 'nine',
+		    '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+		    '13' => 'thirteen', '14' => 'fourteen',
+		    '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+		    '18' => 'eighteen', '19' =>'nineteen', '20' => 'twenty',
+		    '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+		    '60' => 'sixty', '70' => 'seventy',
+		    '80' => 'eighty', '90' => 'ninety');
+		   $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+		   while ($i < $digits_1) {
+		     $divider = ($i == 2) ? 10 : 100;
+		     $number = floor($no % $divider);
+		     $no = floor($no / $divider);
+		     $i += ($divider == 10) ? 1 : 2;
+		     if ($number) {
+		        $plural = (($counter = count($str)) && $number > 9) ? 's' : null;
+		        $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+		        $str [] = ($number < 21) ? $words[$number] .
+		            " " . $digits[$counter] . $plural . " " . $hundred
+		            :
+		            $words[floor($number / 10) * 10]
+		            . " " . $words[$number % 10] . " "
+		            . $digits[$counter] . $plural . " " . $hundred;
+		     } else $str[] = null;
+		  }
+		  $str = array_reverse($str);
+		  $result = implode('', $str);
+		  $points = ($point>0) ? "" . $words[$point / 10] . " " . $words[$point = $point % 10] : '';
+
+		  return $result . "Rupees  and ".$points." Paise";
 	}
 
 }
