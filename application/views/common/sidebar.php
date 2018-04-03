@@ -38,7 +38,7 @@
           </a>
           <ul class="treeview-menu">
             <li><a href="<?=base_url('purchase')?>">&nbsp;&nbsp;&nbsp;<i class="fa fa-circle-o"></i> Purchase</a></li>
-            <li><a href="<?=base_url('invoice')?>">&nbsp;&nbsp;&nbsp;<i class="fa fa-circle-o"></i> Invoice</a></li>
+             <li><a href="<?=base_url('invoice')?>">&nbsp;&nbsp;&nbsp;<i class="fa fa-circle-o"></i> Invoice</a></li>
           </ul>
         </li>
       </ul>
