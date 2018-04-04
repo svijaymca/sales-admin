@@ -50,7 +50,7 @@ class invoicePrint extends CI_Controller {
 
 		$pdf->WriteHTML($template);
 
-		$fileName = $invNo->invoiceNo.' - INVOICE.pdf';
+		$fileName = $invNo->invoiceNo.' INVOICE.pdf';
 		$pdf->Output($fileName, 'I');
 	}
 		
