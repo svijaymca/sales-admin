@@ -41,12 +41,13 @@ class Invoice extends CI_Controller {
             		$invoiceNo 	= 'IN'.substr(('00001'.++$n),-5);
             	}
 
+            	$invoiceDate = $this->UtilityMethods->dateDatabaseFormat($this->input->post('invoiceDate'));
     if($this->input->post('invoiceNetTotal') > 0 ){
 
 		 $data = array(
 			'invoiceUniqId' => random_string('alnum',20),
 			'invoiceNo' 	=> $invoiceNo,
-			'invoiceDate' 	=> $this->UtilityMethods->dateDatabaseFormat($this->input->post('invoiceDate')),
+			'invoiceDate' 	=> $invoiceDate,
 			'invoiceCustomerId' 	=>  $this->input->post('invoiceCustomerId'),
 			'invoiceGrossTotal' 	=> $this->input->post('invoiceGrossTotal'),
 			'invoiceDiscountPer' 	=> $this->input->post('invoiceDiscountPer'),
@@ -90,10 +91,17 @@ class Invoice extends CI_Controller {
 									
 										list($purdetails, $status) = $this->invoiceModel->invoiceDetailsModelInsert($details);	
 								
-								if($status===false){
+						if($status===false){
+							$tranSaction = false;
+							break;
+						}else{
+							$sta = $this->UtilityMethods->stockLedger('OUT',$invoiceId, $purdetails, $invoiceDate, $invoiceDetailsProductId[$index], $this->input->post('invoiceBranchId'), $invoiceDetailsQty[$index]*-1 , 'INVOICE');
+
+								if($sta===false){
 									$tranSaction = false;
 									break;
 								}
+						}
 						
 						
 
@@ -136,7 +144,7 @@ class Invoice extends CI_Controller {
 		$this->db->trans_start(); $tranSaction = true;
             	//print_r($_POST); exit;
 	$invoiceId   = $this->UtilityMethods->getId('invoiceId','invoice','invoiceUniqId', $this->input->post('invoiceId') );
-	
+	$invoiceDate = $this->UtilityMethods->dateDatabaseFormat($this->input->post('invoiceDate'));
     if($this->input->post('invoiceNetTotal') > 0 ){
 		
 		 $data = array(
@@ -186,7 +194,15 @@ class Invoice extends CI_Controller {
 								if($status===false){
 									$tranSaction = false;
 									break;
+								}else{
+									$sta = $this->UtilityMethods->stockLedger('OUT', $invoiceId, $purdetails, $invoiceDate, $invoiceDetailsProductId[$index], $this->input->post('invoiceBranchId'), $invoiceDetailsQty[$index]*-1 , 'INVOICE');
+
+									if($sta===false){
+										$tranSaction = false;
+										break;
+									}
 								}
+
 							}else{
 							
 							$whereDetails = array('invoiceDetailsId' => $invoiceDetailsId[$index], 'invoiceDetailsInvoiceId' => $invoiceId );
@@ -205,7 +221,15 @@ class Invoice extends CI_Controller {
 								if($status===false){
 									$tranSaction = false;
 									break;
+								}else{
+									$sta = $this->UtilityMethods->stockLedger('OUT', $invoiceId , $invoiceDetailsId[$index], $invoiceDate, $invoiceDetailsProductId[$index], $this->input->post('invoiceBranchId'), $invoiceDetailsQty[$index]*-1 , 'INVOICE');
+
+									if($sta===false){
+										$tranSaction = false;
+										break;
+									}
 								}
+						
 								
 							}
 
@@ -247,7 +271,7 @@ class Invoice extends CI_Controller {
 
 			$result = $this->UtilityMethods->recordDelete('invoice', $data1, 'invoiceId', $id);
 			$result = $this->UtilityMethods->recordDelete('invoiceDetails', $data2, 'invoiceDetailsInvoiceId', $id);
-
+			$sta 	= $this->UtilityMethods->stockLedger('OUT', $id, '', '', '', '', '', 'ALLDELETE');
 			if($result==true){
 				$this->session->set_flashdata('msg', 'Invoice Deleted Successfully...');
 				redirect(base_url('invoice'));
@@ -263,7 +287,8 @@ class Invoice extends CI_Controller {
 	}
 	public function invoiceDetailDelete()
 	{ 
-		$id   = $this->UtilityMethods->getId('invoiceDetailsId','invoiceDetails','invoiceDetailsUniqId', $this->uri->segment(3) );
+		$id = $this->UtilityMethods->getId('invoiceDetailsId','invoiceDetails','invoiceDetailsUniqId', $this->uri->segment(3));
+		$entryId = $this->UtilityMethods->getId('invoiceId','invoice','invoiceUniqId', $this->uri->segment(4));
 		if(isset($id)){
 			
 			$data2 = array(
@@ -273,6 +298,8 @@ class Invoice extends CI_Controller {
 				'invoiceDetailsDeletedIp' 	=> $this->UtilityMethods->getRealIpAddr() );
 
 			$result = $this->invoiceModel->recordDetailDelete('invoiceDetails', $data2, 'invoiceDetailsId', $id);
+
+			$sta = $this->UtilityMethods->stockLedger('OUT', $entryId, $id, '', $this->uri->segment(5), $this->uri->segment(6), '', 'DEL');
 
 			if($result==true){
 				$this->session->set_flashdata('msg', 'Invoice Product Deleted Successfully...');
