@@ -82,7 +82,10 @@ class Purchase extends CI_Controller {
 							'purchaseDetailsProductId' 		=> $purchaseDetailsProductId[$index],
 							'purchaseDetailsQty' 			=> $purchaseDetailsQty[$index],
 							'purchaseDetailsRate' 			=> $purchaseDetailsRate[$index],
-							'purchaseDetailsAmount' 		=> $purchaseDetailsAmount[$index] );
+							'purchaseDetailsAmount' 		=> $purchaseDetailsAmount[$index] 
+							'purchaseDetailsAddedBy' 		=> $this->session->userdata['logged_in']['user_id'],
+							'purchaseDetailsAddedOn' 		=> NOW(),
+							'purchaseDetailsAddedIp' 		=> $this->UtilityMethods->getRealIpAddr());
 							
 					list($purdetails, $status) = $this->purchaseModel->purchaseDetailsModelInsert($details);	
 						if($status===false){
@@ -90,7 +93,7 @@ class Purchase extends CI_Controller {
 							break;
 						}else{
 
-						$sta = $this->UtilityMethods->stockLedger('IN', $purdetails, $purchaseDate, $purchaseDetailsProductId[$index], $this->input->post('purchaseBranchId'), $purchaseDetailsQty[$index], 'PURCHASE');
+						$sta = $this->UtilityMethods->stockLedger('IN', $purchaseId, $purdetails, $purchaseDate, $purchaseDetailsProductId[$index], $this->input->post('purchaseBranchId'), $purchaseDetailsQty[$index], 'PURCHASE');
 
 							if($sta===false){
 								$tranSaction = false;
@@ -165,8 +168,11 @@ class Purchase extends CI_Controller {
 				'purchaseDetailsDeletedOn' 	=> NOW(),
 				'purchaseDetailsDeletedIp' 	=> $this->UtilityMethods->getRealIpAddr() );
 
+
 			$result = $this->UtilityMethods->recordDelete('purchase', $data1, 'purchaseId', $id);
 			$result = $this->UtilityMethods->recordDelete('purchaseDetails', $data2, 'purchaseDetailsPurchaseId', $id);
+
+			$sta 	= $this->UtilityMethods->stockLedger('IN', $id, '', '', '', '', '', 'ALLDELETE');
 
 			if($result==true){
 				$this->session->set_flashdata('msg', 'Purchase Deleted Successfully...');
