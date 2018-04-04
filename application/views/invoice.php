@@ -330,7 +330,7 @@ echo form_hidden('invoiceId', !empty($editData->invoiceUniqId)?$editData->invoic
                               <input type="text" name="invoiceDetailsAmount[]" id="invoiceDetailsAmount<?=$i?>" class="form-control alignRight amount" value="<?=!empty($editDetail->invoiceDetailsAmount)?$editDetail->invoiceDetailsAmount:''?>" readonly />
                           </td>    
                            <td style="text-align:center">
-               <a style="font-size:16px; color: red" href="<?=base_url('invoice/invoiceDetailDelete/'.$editDetail->invoiceDetailsUniqId.'/'.$editData->invoiceUniqId)?>" onclick="return confirm('Are You Want To Delete....!')"><i class="fa fa-trash-o"></i></a>
+               <a style="font-size:16px; color: red" href="<?=base_url('invoice/invoiceDetailDelete/'.$editDetail->invoiceDetailsUniqId.'/'.$editData->invoiceUniqId.'/'.$editDetail->invoiceDetailsProductId.'/'.$editData->invoiceBranchId)?>" onclick="return confirm('Are You Want To Delete....!')"><i class="fa fa-trash-o"></i></a>
 						    </td>
                         </tr>
 						  
