@@ -29,23 +29,24 @@ class utilityMethods extends CI_Model{
 	}
 
 
-	public function stockLedger($type, $detailId, $date, $productId, $branchId, $qty, $ledgerStatus){
+	public function stockLedger($type, $id, $detailId, $date, $productId, $branchId, $qty, $ledgerStatus){
 
-		$wh	= array('stockLedgerStatus'=> 0, 'stockLedgerType'=> $type, 'stockLedgerId' => $detailId, 'stockLedgerProductId' => $productId, 'stockLedgerBranchId' 	=> $branchId );
+		$wh	= array('stockLedgerStatus'=> 0, 'stockLedgerType'=> $type, 'stockLedgerEntryId' => $id, 'stockLedgerDetailId' => $detailId, 'stockLedgerProductId' => $productId, 'stockLedgerBranchId' 	=> $branchId );
 
-		$this->db->select('*');
+		$this->db->select('stockLedgerId');
 		$this->db->from('stockLedger');
 		$this->db->where($wh);
-		$query 		= $this->db->get();
-		$record 	= $query->result();
-		$rows 		= $query->num_rows();
-
-		if($ledgerStatus !='DELETE'){
+		$query 		= $this->db->get(); 
+		$stockLedgerId = !empty($query->row()->stockLedgerId)?$query->row()->stockLedgerId:''; 
+		$rows 		= $query->num_rows(); 
+	
+		if($ledgerStatus !='DEL' && $ledgerStatus !='ALLDELETE'){
 
 		if($rows == 0){
 
 			$data = array(
 				'stockLedgerType' 		=> $type,
+				'stockLedgerEntryId' 	=> $id,
 				'stockLedgerDetailId' 	=> $detailId,
 				'stockLedgerDate' 		=> $date,
 				'stockLedgerProductId' 	=> $productId,
@@ -62,7 +63,6 @@ class utilityMethods extends CI_Model{
 		}else{
 
 			$data = array(
-				'stockLedgerType' 		=> $type,
 				'stockLedgerDate' 		=> $date,
 				'stockLedgerProductId' 	=> $productId,
 				'stockLedgerBranchId' 	=> $branchId,
@@ -71,7 +71,7 @@ class utilityMethods extends CI_Model{
 				'stockLedgerModifiedOn' => NOW(),
 				'stockLedgerModifiedIp' => $this->UtilityMethods->getRealIpAddr() );
 
-			$where	= array( 'stockLedgerId' 	=> $record['stockLedgerId']);
+			$where	= array( 'stockLedgerId' => $stockLedgerId, 'stockLedgerType' => $type, 'stockLedgerEntryId' => $id, 'stockLedgerDetailId' => $detailId  );
 
 			$this->db->set($data);
 			$this->db->where($where);
@@ -81,14 +81,79 @@ class utilityMethods extends CI_Model{
 			return array($status);
 		}
 
+		}elseif($ledgerStatus == 'DEL'){
+				$dataDelete = array(
+				'stockLedgerStatus' 	=> 1,
+				'stockLedgerDeletedBy' 	=> $this->session->userdata['logged_in']['user_id'],
+				'stockLedgerDeletedOn' 	=> NOW(),
+				'stockLedgerDeletedIp' 	=> $this->UtilityMethods->getRealIpAddr() );
+
+
+			$this->db->set($dataDelete); 
+			$this->db->where('stockLedgerId', $stockLedgerId);
+			$this->db->update('stockLedger'); 
+			$status = $this->db->trans_status();
+			return array($status);
+
 		}else{
-			
+
+			$dataDelete = array(
+				'stockLedgerStatus' 	=> 1,
+				'stockLedgerDeletedBy' 	=> $this->session->userdata['logged_in']['user_id'],
+				'stockLedgerDeletedOn' 	=> NOW(),
+				'stockLedgerDeletedIp' 	=> $this->UtilityMethods->getRealIpAddr() );
+
+
+			$this->db->set($dataDelete); 
+			$this->db->where('stockLedgerEntryId', $id);
+			$this->db->update('stockLedger'); 
+			$status = $this->db->trans_status();
+			return array($status);
 
 		}
 
 	}
 
+	public function recordDelete($table, $data, $field, $id)
+	{
 
+
+		if(!empty($id)){	
+			$this->db->set($data); 
+			$this->db->where($field, $id);
+			$this->db->update($table);  
+
+			return true;
+
+		}else{
+
+			return false;
+		}
+
+	} 
+
+	public function getExistOrNot($table_name, $field, $val, $status){ 
+		 $condition = $field." = '".$val."'  AND " .$status." = 0 ";
+			$this->db->select($field);
+			$this->db->from($table_name);
+			$this->db->where($condition);
+			 $query = $this->db->get();
+			
+		return $query->num_rows(); 
+
+	}
+
+	public function getNo($table_name, $field, $branch_field, $branch_val, $status){
+
+			$condition = $branch_field." = '".$branch_val."'  AND " .$status." = 0 ";
+			$this->db->select_max($field);
+			$this->db->from($table_name);
+			$this->db->where($condition);
+			 $query = $this->db->get(); //echo  $this->db->last_query(); exit;
+			 $row 	= $query->row();
+
+		return $row->$field;
+	}
 
 	public function generatePassword($password) {
 			$password = md5($password);
@@ -203,46 +268,7 @@ class utilityMethods extends CI_Model{
 
 	}
 
-	public function recordDelete($table, $data, $field, $id)
-	{
-
-
-		if(!empty($id)){	
-			$this->db->set($data); 
-			$this->db->where($field, $id);
-			$this->db->update($table);  
-
-			return true;
-
-		}else{
-
-			return false;
-		}
-
-	} 
-
-	public function getExistOrNot($table_name, $field, $val, $status){ 
-		 $condition = $field." = '".$val."'  AND " .$status." = 0 ";
-			$this->db->select($field);
-			$this->db->from($table_name);
-			$this->db->where($condition);
-			 $query = $this->db->get();
-			
-		return $query->num_rows(); 
-
-	}
-
-	public function getNo($table_name, $field, $branch_field, $branch_val, $status){
-
-			$condition = $branch_field." = '".$branch_val."'  AND " .$status." = 0 ";
-			$this->db->select_max($field);
-			$this->db->from($table_name);
-			$this->db->where($condition);
-			 $query = $this->db->get(); //echo  $this->db->last_query(); exit;
-			 $row 	= $query->row();
-
-		return $row->$field;
-	}
+	
 
 	public function numberToWords($number){
 
