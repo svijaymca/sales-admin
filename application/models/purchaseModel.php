@@ -23,6 +23,7 @@ class purchaseModel extends CI_Model{
 		 $this->db->where('purchaseStatus', 0);
 		 $this->db->join('suppliers', 'suppliers.supplierId = purchase.purchaseSupplierId', 'left');
 		 $this->db->join('branch', 'branch.branchId = purchase.purchaseBranchId', 'left');
+		 $this->db->order_by("purchaseId", "DESC");
 		 $query = $this->db->get()->result();
 		 return $query;
 	}
@@ -50,17 +51,6 @@ class purchaseModel extends CI_Model{
 
 		return array($query1, $query2);
 	}
-
-	/*public function purchaseModelUpdate($data, $id){
-
-		$this->db->set($data);
-		$this->db->where('purchaseId', $id);
-		$this->db->update('purchase');
-
-		return true;
-
-	} */
-
 	
  
 
