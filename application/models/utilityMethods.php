@@ -114,6 +114,29 @@ class utilityMethods extends CI_Model{
 
 	}
 
+
+	public function getStockAvailability($branchId, $productId){
+		$where = "stockLedgerStatus = 0 ";
+
+		if( isset($branchId) && !empty($branchId) ){
+			$where	.= "AND stockLedgerBranchId = '".$branchId."' ";
+		}
+		if( isset($productId) && !empty($productId) ){
+			$where	.= "AND stockLedgerProductId = '".$productId."' ";
+		}
+
+		$this->db->select(' SUM(stockLedgerQty) as quantity, productName, productCode ');
+		$this->db->from('stockLedger');
+		$this->db->join('products', 'productId = stockLedgerProductId', 'left');
+		$this->db->where($where);
+		$this->db->group_by(' stockLedgerProductId'); 
+		$this->db->order_by(' productName'); 
+		$query = $this->db->get()->result();  //echo $this->db->last_query(); exit;
+		
+		return $query;
+
+	}
+
 	public function recordDelete($table, $data, $field, $id)
 	{
 
