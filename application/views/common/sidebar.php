@@ -30,7 +30,7 @@
         </li>
          <li class="treeview">
           <a href="#">
-            <i class="fa fa-bar-chart"></i>
+            <i class="fa fa-shopping-cart"></i>
             <span>PURCHASE & SALES</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
@@ -39,6 +39,18 @@
           <ul class="treeview-menu">
             <li><a href="<?=base_url('purchase')?>">&nbsp;&nbsp;&nbsp;<i class="fa fa-circle-o"></i> Purchase</a></li>
              <li><a href="<?=base_url('invoice')?>">&nbsp;&nbsp;&nbsp;<i class="fa fa-circle-o"></i> Invoice</a></li>
+          </ul>
+        </li>
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-bar-chart"></i>
+            <span>REPORTS</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?=base_url('stockAvailability')?>">&nbsp;&nbsp;&nbsp;<i class="fa fa-circle-o"></i> Stock Availability</a></li>
           </ul>
         </li>
       </ul>
