@@ -8,6 +8,7 @@ class Product extends CI_Controller {
 		$this->load->library('form_validation');
 		$this->load->model('UtilityMethods');
 		$this->load->model('productModel');
+		$this->UtilityMethods->loginAuthentication();
 	}
 
 	public function index()
