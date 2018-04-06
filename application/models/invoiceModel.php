@@ -23,6 +23,7 @@ class invoiceModel extends CI_Model{
 		 $this->db->where('invoiceStatus', 0);
 		 $this->db->join('customers', 'customers.customerId = invoice.invoiceCustomerId', 'left');
 		 $this->db->join('branch', 'branch.branchId = invoice.invoiceBranchId', 'left');
+		 $this->db->order_by('invoiceId DESC');
 		 $query = $this->db->get()->result();
 		 return $query;
 	}
