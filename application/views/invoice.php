@@ -14,7 +14,7 @@ function getRow(){
 
             apndRow += '<td><input type="text" name="invoiceDetailsProductCode[]" id="invoiceDetailsProductCode'+i+'" class="form-control" readonly /> </td>';
 
-            apndRow += '<td><input type="text" name="invoiceDetailsQty[]" id="invoiceDetailsQty'+i+'" class="form-control alignRight" onkeyup="getAmount('+i+')" /> </td>';
+            apndRow += '<td><input type="text" name="invoiceDetailsQty[]" id="invoiceDetailsQty'+i+'" class="form-control alignRight" onkeyup="getAmount('+i+')" onfocus="stockAvailability('+i+')" onblur="checkStock('+i+')" /> <input type="hidden" name="stockQty[]" id="stockQty'+i+'" /> <input type="hidden" name="exQty[]" id="exQty'+i+'" /></td>';
 
             apndRow += '<td><input type="text" name="invoiceDetailsRate[]" id="invoiceDetailsRate'+i+'" class="form-control alignRight" onfocus="getAmount('+i+')" readonly /> </td>';
 
@@ -43,15 +43,53 @@ function getRow(){
     });
   }
   function getProduct(id){
-    $('#invoiceDetailsProductName'+id).autocomplete({ source: '<?=base_url("autoCompleteData/getProduct")?>', minLength:1,
-      select:function(evt, ui){
-                $('#invoiceDetailsProductCode'+id).val(ui.item.productCode);
-                $('#invoiceDetailsProductId'+id).val(ui.item.productId); 
-                $('#invoiceDetailsRate'+id).val(ui.item.productRate); 
-                $('#invoiceDetailsQty'+id).focus();
-      } 
-    });
+    var branchId    = Number($('#invoiceBranchId').val());
+
+      if(branchId > 0){
+          $('#invoiceDetailsProductName'+id).autocomplete({ source: '<?=base_url("autoCompleteData/getProduct")?>', minLength:1,
+            select:function(evt, ui){
+                      $('#invoiceDetailsProductCode'+id).val(ui.item.productCode);
+                      $('#invoiceDetailsProductId'+id).val(ui.item.productId); 
+                      $('#invoiceDetailsRate'+id).val(ui.item.productRate); 
+                      $('#invoiceDetailsQty'+id).focus();
+                      stockAvailability(id);
+            } 
+          });
+        
+        }else{
+          alert('Please Choose Branch...');
+          return false;
+        }
+
   }
+
+  function stockAvailability(id){
+        var productId   = $('#invoiceDetailsProductId'+id).val();
+        var branchId    = $('#invoiceBranchId').val();
+        $.get('<?=base_url("autoCompleteData/getStock")?>', {brId:branchId, prdId:productId}, function(data) {
+            $('#stockQty'+id).val(data);
+        });
+  }
+
+  function checkStock(id){
+        var qty         = Number($('#invoiceDetailsQty'+id).val());
+        var stQty       = Number($('#stockQty'+id).val());
+        var exQty       = Number($('#exQty'+id).val());
+        var stockQty    = stQty + exQty; 
+
+        if( qty > stockQty ){
+
+            alert("Quantity is greater than stock.. Please enter less quantity...!");
+             $('#invoiceDetailsQty'+id).css({"border-color": "#f31242", "border-width":"1px", "border-style":"solid"});
+             $('#invoiceDetailsQty'+id).focus();
+            return false;
+        }else{
+          $('#invoiceDetailsQty'+id).css({"border-color": "GREEN", "border-width":"1px", "border-style":"solid"});
+          return true;
+        }
+
+  }
+
 
 function getAmount(id){
 
@@ -92,8 +130,8 @@ function getTotalAmount(){
 }
 
 function discountValue(type){
-    var gross     	= Number($('#invoiceGrossTotal').val());
-	var disPer   	= Number($('#invoiceDiscountPer').val());
+    var gross     = Number($('#invoiceGrossTotal').val());
+	  var disPer   	= Number($('#invoiceDiscountPer').val());
     var disamt   	= Number($('#invoiceDiscountAmount').val());
 	 
 	if(type==1){
@@ -295,7 +333,9 @@ echo form_hidden('invoiceId', !empty($editData->invoiceUniqId)?$editData->invoic
                              <input type="text" name="invoiceDetailsProductCode[]" id="invoiceDetailsProductCode<?=$i?>" class="form-control alignCenter"  readonly />
                           </td> 
                           <td>
-                            <input type="text" name="invoiceDetailsQty[]" id="invoiceDetailsQty<?=$i?>" class="form-control alignRight" tabindex="1" onkeyup="getAmount(<?=$i?>)" />
+                            <input type="text" name="invoiceDetailsQty[]" id="invoiceDetailsQty<?=$i?>" class="form-control alignRight" tabindex="1" onkeyup="getAmount(<?=$i?>)" onfocus="stockAvailability(<?=$i?>)" onblur="checkStock(<?=$i?>)" />
+                            <input type="hidden" name="stockQty[]" id="stockQty<?=$i?>" />
+                            <input type="hidden" name="exQty[]" id="exQty<?=$i?>" value="0" />
                           </td> 
                           <td>
                              <input type="text" name="invoiceDetailsRate[]" id="invoiceDetailsRate<?=$i?>" class="form-control alignRight"  readonly />
@@ -321,7 +361,8 @@ echo form_hidden('invoiceId', !empty($editData->invoiceUniqId)?$editData->invoic
                              <input type="text" name="invoiceDetailsProductCode[]" id="invoiceDetailsProductCode<?=$i?>" class="form-control alignCenter"  readonly value="<?=!empty($editDetail->productCode)?$editDetail->productCode:''?>" />
                           </td> 
                           <td>
-                            <input type="text" name="invoiceDetailsQty[]" id="invoiceDetailsQty<?=$i?>" class="form-control alignRight" tabindex="1" onkeyup="getAmount(<?=$i?>)" value="<?=!empty($editDetail->invoiceDetailsQty)?$editDetail->invoiceDetailsQty:''?>" />
+                            <input type="text" name="invoiceDetailsQty[]" id="invoiceDetailsQty<?=$i?>" class="form-control alignRight" tabindex="1" onkeyup="getAmount(<?=$i?>)" value="<?=!empty($editDetail->invoiceDetailsQty)?$editDetail->invoiceDetailsQty:''?>" onfocus="stockAvailability(<?=$i?>)" onblur="checkStock(<?=$i?>)" /> <input type="hidden" name="exQty[]" id="exQty<?=$i?>" value="<?=!empty($editDetail->invoiceDetailsQty)?$editDetail->invoiceDetailsQty:''?>" />
+                            <input type="hidden" name="stockQty[]" id="stockQty<?=$i?>" />
                           </td> 
                           <td>
                              <input type="text" name="invoiceDetailsRate[]" id="invoiceDetailsRate<?=$i?>" class="form-control alignRight" value="<?=!empty($editDetail->invoiceDetailsRate)?$editDetail->invoiceDetailsRate:''?>" readonly />
