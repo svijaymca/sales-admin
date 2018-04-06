@@ -7,6 +7,7 @@ class Customer extends CI_Controller {
 		parent::__construct();
 		$this->load->library('form_validation');
 		$this->load->model('UtilityMethods');
+		$this->UtilityMethods->loginAuthentication();
 		$this->load->model('customerModel');
 	}
 
