@@ -8,6 +8,7 @@ class Supplier extends CI_Controller {
 		$this->load->library('form_validation');
 		$this->load->model('UtilityMethods');
 		$this->load->model('supplierModel');
+		$this->UtilityMethods->loginAuthentication();
 	}
 
 	public function index()
