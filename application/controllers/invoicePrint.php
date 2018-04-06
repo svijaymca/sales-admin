@@ -7,6 +7,7 @@ class invoicePrint extends CI_Controller {
 		parent::__construct();
 		$this->load->model('UtilityMethods');
 		$this->load->model('invoiceModel');
+		$this->UtilityMethods->loginAuthentication();
 	}
 
 	public function index()
