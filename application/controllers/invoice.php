@@ -8,7 +8,7 @@ class Invoice extends CI_Controller {
 		$this->load->library('form_validation');
 		$this->load->model('UtilityMethods');
 		$this->load->model('invoiceModel');
-
+		$this->UtilityMethods->loginAuthentication();
 		 
 	}
 
